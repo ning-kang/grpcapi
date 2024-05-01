@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option go_package = "github.com/ning-kang/grpcapi/protogen/golang/bookstore";
+
+message Book {
+    uint64 ID = 1 [json_name = "id"];
+    string Title = 2 [json_name = "title"];
+    string Author = 3 [json_name = "author"];
+}
+
+message Empty {}
+
+message BookList {
+    repeated Book books = 1;
+}
+
+service BookStore {
+    rpc ListBooks(Empty) returns (BookList) {}
+}
