@@ -3,6 +3,7 @@ module github.com/ning-kang/grpcapi
 go 1.22.1
 
 require (
+	github.com/google/martian/v3 v3.3.3
 	github.com/spf13/viper v1.18.2
 	google.golang.org/grpc v1.63.2
 	google.golang.org/protobuf v1.34.0

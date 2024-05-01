@@ -14,6 +14,11 @@ message BookList {
     repeated Book books = 1;
 }
 
+message BookId {
+    uint64 id = 1;
+}
+
 service BookStore {
     rpc ListBooks(Empty) returns (BookList) {}
+    rpc GetBook(BookId) returns (Book) {}
 }

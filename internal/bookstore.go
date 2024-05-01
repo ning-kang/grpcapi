@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/google/martian/v3/log"
 	"github.com/ning-kang/grpcapi/protogen/golang/bookstore"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -61,4 +62,13 @@ func (bs *BookStore) ListBooks(ctx context.Context, in *bookstore.Empty) (*books
 	var bookList bookstore.BookList // have to be concrete struct
 	bs.DB.Find(&bookList.Books)     // modified books value
 	return &bookList, nil
+}
+
+func (bs *BookStore) GetBook(ctx context.Context, in *bookstore.BookId) (*bookstore.Book, error) {
+	var book bookstore.Book // have to be concrete struct
+	if err := bs.DB.Where("id = ?", in.Id).First(&book).Error; err != nil {
+		log.Errorf("Failed to get %s: %s", in.Id, err.Error())
+		return nil, err
+	}
+	return &book, nil
 }
