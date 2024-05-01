@@ -18,7 +18,21 @@ message BookId {
     uint64 id = 1;
 }
 
+message CreateBookInput {
+    string Title = 1 [json_name = "title"];
+    string Author = 2 [json_name = "author"];
+}
+
+message UpdateBookInput {
+    uint64 ID = 1 [json_name = "id"];
+    optional string Title = 2 [json_name = "title"];
+    optional string Author = 3 [json_name = "author"];
+}
+
 service BookStore {
     rpc ListBooks(Empty) returns (BookList) {}
     rpc GetBook(BookId) returns (Book) {}
+    rpc CreateBook(CreateBookInput) returns (Book) {}
+    rpc UpdateBook(UpdateBookInput) returns (Book) {}
+    rpc DeleteBook(BookId) returns (Empty) {}
 }

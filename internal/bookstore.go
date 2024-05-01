@@ -72,3 +72,40 @@ func (bs *BookStore) GetBook(ctx context.Context, in *bookstore.BookId) (*bookst
 	}
 	return &book, nil
 }
+
+func (bs *BookStore) CreateBook(ctx context.Context, in *bookstore.CreateBookInput) (*bookstore.Book, error) {
+	book := &bookstore.Book{Title: in.Title, Author: in.Author}
+	result := bs.DB.Create(book) // Primary key ID is already inserted
+	if result.Error != nil {
+		log.Errorf("Failed to create book %s: %s", book, result.Error.Error())
+		return nil, result.Error
+	}
+	return book, nil
+}
+
+func (bs *BookStore) UpdateBook(ctx context.Context, in *bookstore.UpdateBookInput) (*bookstore.Book, error) {
+	book, err := bs.GetBook(ctx, &bookstore.BookId{Id: in.ID})
+	if err != nil {
+		return nil, err
+	}
+	result := bs.DB.Model(book).Updates(in)
+	if result.Error != nil {
+		log.Errorf("Failed to create book %s: %s", book, result.Error.Error())
+		return nil, result.Error
+	}
+	return book, nil
+
+}
+
+func (bs *BookStore) DeleteBook(ctx context.Context, in *bookstore.BookId) (*bookstore.Empty, error) {
+	book, err := bs.GetBook(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+	result := bs.DB.Delete(book)
+	if result.Error != nil {
+		log.Errorf("Failed to delete book %s: %s", book, result.Error.Error())
+		return nil, result.Error
+	}
+	return nil, nil
+}
