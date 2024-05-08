@@ -4,25 +4,27 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"os"
 
+	"github.com/joho/godotenv"
 	"github.com/ning-kang/grpcapi/internal"
 	"github.com/ning-kang/grpcapi/protogen/golang/bookstore"
-	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 )
 
 func main() {
-	// load application settings
-	viper.SetConfigName("config")
-	viper.AddConfigPath(".")
-	if err := viper.ReadInConfig(); err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			log.Fatal(fmt.Errorf("error: config File is not found: %w", err))
-		} else {
-			panic(fmt.Errorf("error: failed reading config file: %w", err))
-		}
+	godotenv.Load()
+
+	hostString := os.Getenv("HOST")
+	if hostString == "" {
+		log.Fatal("HOST is not found in the environment file")
 	}
-	host := viper.GetString("server.host") + ":" + viper.GetString("server.port")
+	portString := os.Getenv("PORT")
+	if portString == "" {
+		log.Fatal("PORT is not found in the environment file")
+	}
+
+	host := hostString + ":" + portString
 
 	// create new grpc server
 	s := grpc.NewServer()
